@@ -35,6 +35,11 @@ import org.apache.ibatis.logging.LogFactory;
  * @author Clinton Begin
  * @author Eduardo Macarron
  */
+
+/**
+ *
+ * 事务缓存，在未提交数据时存储在entriesToAddOnCommit，当提交时，存储到delegate
+ */
 public class TransactionalCache implements Cache {
 
   private static final Log log = LogFactory.getLog(TransactionalCache.class);

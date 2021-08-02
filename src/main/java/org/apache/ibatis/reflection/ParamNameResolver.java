@@ -62,12 +62,17 @@ public class ParamNameResolver {
     int paramCount = paramAnnotations.length;
     // get names from @Param annotations
     for (int paramIndex = 0; paramIndex < paramCount; paramIndex++) {
+      // c除去特定参数RowBounds，ResultHandler
       if (isSpecialParameter(paramTypes[paramIndex])) {
         // skip special parameters
         continue;
       }
+
       String name = null;
+
+      //循环处理该参数下的所有的注解,找到注解Param
       for (Annotation annotation : paramAnnotations[paramIndex]) {
+
         if (annotation instanceof Param) {
           hasParamAnnotation = true;
           name = ((Param) annotation).value();
@@ -76,7 +81,7 @@ public class ParamNameResolver {
       }
       if (name == null) {
         // @Param was not specified.
-        if (useActualParamName) {
+        if (useActualParamName) { // 要开启-parameter
           name = getActualParamName(method, paramIndex);
         }
         if (name == null) {
@@ -153,6 +158,9 @@ public class ParamNameResolver {
    * @since 3.5.5
    */
   public static Object wrapToMapIfCollection(Object object, String actualParamName) {
+    /**
+     * 如果是list set 等
+     */
     if (object instanceof Collection) {
       ParamMap<Object> map = new ParamMap<>();
       map.put("collection", object);
@@ -161,7 +169,8 @@ public class ParamNameResolver {
       }
       Optional.ofNullable(actualParamName).ifPresent(name -> map.put(name, object));
       return map;
-    } else if (object != null && object.getClass().isArray()) {
+
+    } else if (object != null && object.getClass().isArray()) { // 如果是数据
       ParamMap<Object> map = new ParamMap<>();
       map.put("array", object);
       Optional.ofNullable(actualParamName).ifPresent(name -> map.put(name, object));

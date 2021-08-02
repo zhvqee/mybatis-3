@@ -15,16 +15,18 @@
  */
 package org.apache.ibatis.binding;
 
+import org.apache.ibatis.binding.MapperProxy.MapperMethodInvoker;
+import org.apache.ibatis.session.SqlSession;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.ibatis.binding.MapperProxy.MapperMethodInvoker;
-import org.apache.ibatis.session.SqlSession;
-
 /**
  * @author Lasse Voss
+ * <p>
+ * MapperProxy 工厂
  */
 public class MapperProxyFactory<T> {
 
@@ -45,7 +47,7 @@ public class MapperProxyFactory<T> {
 
   @SuppressWarnings("unchecked")
   protected T newInstance(MapperProxy<T> mapperProxy) {
-    return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[] { mapperInterface }, mapperProxy);
+    return (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), new Class[]{mapperInterface}, mapperProxy);
   }
 
   public T newInstance(SqlSession sqlSession) {

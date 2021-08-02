@@ -54,8 +54,17 @@ public class MapperMethod {
     this.method = new MethodSignature(config, mapperInterface, method);
   }
 
+  /**
+   * 方法执行入口
+   * @param sqlSession
+   * @param args
+   * @return
+   */
   public Object execute(SqlSession sqlSession, Object[] args) {
     Object result;
+    /**
+     * 这里根据该方法的命令，在通过Method ->SqlCommand 解析出该方法的类型
+     */
     switch (command.getType()) {
       case INSERT: {
         Object param = method.convertArgsToSqlCommandParam(args);
@@ -97,6 +106,10 @@ public class MapperMethod {
       default:
         throw new BindingException("Unknown execution method for: " + command.getName());
     }
+
+    /**
+     * 如果返回值是null，但是方法的返回值需要是原生类型，且不是void 则抛异常
+     */
     if (result == null && method.getReturnType().isPrimitive() && !method.returnsVoid()) {
       throw new BindingException("Mapper method '" + command.getName()
           + " attempted to return null from a method with a primitive return type (" + method.getReturnType() + ").");
@@ -216,6 +229,9 @@ public class MapperMethod {
 
   }
 
+  /**
+   * 解析出 mapper.xml上的  id name,和该执行的类型type
+   */
   public static class SqlCommand {
 
     private final String name;
@@ -224,6 +240,8 @@ public class MapperMethod {
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
       final String methodName = method.getName();
       final Class<?> declaringClass = method.getDeclaringClass();
+
+      // 解析得到 xml的 MappedStatement 语句
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
           configuration);
       if (ms == null) {
@@ -253,12 +271,23 @@ public class MapperMethod {
 
     private MappedStatement resolveMappedStatement(Class<?> mapperInterface, String methodName,
         Class<?> declaringClass, Configuration configuration) {
+
+      /**
+       * 接口名+方法名
+       */
       String statementId = mapperInterface.getName() + "." + methodName;
+      /**
+       *
+       * 到 configuration 是由xml 或其他形式转化而来
+       */
       if (configuration.hasStatement(statementId)) {
         return configuration.getMappedStatement(statementId);
       } else if (mapperInterface.equals(declaringClass)) {
         return null;
       }
+      /**
+       * 得到父类接口 interface TestMapper extends  SupperMapper
+       */
       for (Class<?> superInterface : mapperInterface.getInterfaces()) {
         if (declaringClass.isAssignableFrom(superInterface)) {
           MappedStatement ms = resolveMappedStatement(superInterface, methodName,

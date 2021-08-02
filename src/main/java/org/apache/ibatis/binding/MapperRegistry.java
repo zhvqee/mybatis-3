@@ -31,6 +31,14 @@ import org.apache.ibatis.session.SqlSession;
  * @author Eduardo Macarron
  * @author Lasse Voss
  */
+
+/**
+ *
+ * Mapper 注册器
+ *
+ *
+ *
+ */
 public class MapperRegistry {
 
   private final Configuration config;

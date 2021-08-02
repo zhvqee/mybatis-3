@@ -95,7 +95,13 @@ public class DefaultSqlSession implements SqlSession {
 
   @Override
   public <K, V> Map<K, V> selectMap(String statement, Object parameter, String mapKey, RowBounds rowBounds) {
+
+    // 先调用 selectList
     final List<? extends V> list = selectList(statement, parameter, rowBounds);
+
+    /**
+     * 构造默认Map的结果转化处理
+     */
     final DefaultMapResultHandler<K, V> mapResultHandler = new DefaultMapResultHandler<>(mapKey,
             configuration.getObjectFactory(), configuration.getObjectWrapperFactory(), configuration.getReflectorFactory());
     final DefaultResultContext<V> context = new DefaultResultContext<>();
@@ -145,6 +151,16 @@ public class DefaultSqlSession implements SqlSession {
     return selectList(statement, parameter, rowBounds, Executor.NO_RESULT_HANDLER);
   }
 
+  /**
+   *
+   * 最终方法
+   * @param statement xxx id   语句 <select id="xxxxx">
+   * @param parameter 参数
+   * @param rowBounds 分页参数
+   * @param handler // 结果处理器
+   * @param <E>
+   * @return
+   */
   private <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds, ResultHandler handler) {
     try {
       MappedStatement ms = configuration.getMappedStatement(statement);
@@ -313,6 +329,11 @@ public class DefaultSqlSession implements SqlSession {
     return (!autoCommit && dirty) || force;
   }
 
+  /**
+   * 转化为Map 集合
+   * @param object
+   * @return
+   */
   private Object wrapCollection(final Object object) {
     return ParamNameResolver.wrapToMapIfCollection(object, null);
   }

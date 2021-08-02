@@ -15,18 +15,22 @@
  */
 package org.apache.ibatis.cache.decorators;
 
+import org.apache.ibatis.cache.Cache;
+
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Deque;
 import java.util.LinkedList;
-
-import org.apache.ibatis.cache.Cache;
 
 /**
  * Soft Reference cache decorator
  * Thanks to Dr. Heinz Kabutz for his guidance here.
  *
  * @author Clinton Begin
+ */
+
+/**
+ * 软引用cache
  */
 public class SoftCache implements Cache {
   private final Deque<Object> hardLinksToAvoidGarbageCollection;
@@ -59,6 +63,7 @@ public class SoftCache implements Cache {
   @Override
   public void putObject(Object key, Object value) {
     removeGarbageCollectedItems();
+    // set SoftEntry
     delegate.putObject(key, new SoftEntry(key, value, queueOfGarbageCollectedEntries));
   }
 
@@ -66,7 +71,7 @@ public class SoftCache implements Cache {
   public Object getObject(Object key) {
     Object result = null;
     @SuppressWarnings("unchecked") // assumed delegate cache is totally managed by this cache
-    SoftReference<Object> softReference = (SoftReference<Object>) delegate.getObject(key);
+      SoftReference<Object> softReference = (SoftReference<Object>) delegate.getObject(key);
     if (softReference != null) {
       result = softReference.get();
       if (result == null) {
@@ -99,6 +104,7 @@ public class SoftCache implements Cache {
     delegate.clear();
   }
 
+  // 从引用队列中找到，已经删除的key,然后删除delegate
   private void removeGarbageCollectedItems() {
     SoftEntry sv;
     while ((sv = (SoftEntry) queueOfGarbageCollectedEntries.poll()) != null) {

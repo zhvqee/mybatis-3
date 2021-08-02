@@ -24,6 +24,13 @@ import java.io.Closeable;
  * using the id columns of the resultMap.
  *
  * @author Guillaume Darmont / guillaume@dropinocean.com
+ * 如果在resultMaps中使用集合，那么游标SQL查询必须是有序的(resultOrdered="true")。
+ */
+
+/**
+ *
+ * 游标：通过迭代器来获取数据，游标非常适合处理通常无法放入内存的数百万项查询。
+ * @param <T>
  */
 public interface Cursor<T> extends Closeable, Iterable<T> {
 

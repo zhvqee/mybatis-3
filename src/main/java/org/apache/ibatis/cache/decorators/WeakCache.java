@@ -15,18 +15,22 @@
  */
 package org.apache.ibatis.cache.decorators;
 
+import org.apache.ibatis.cache.Cache;
+
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Deque;
 import java.util.LinkedList;
-
-import org.apache.ibatis.cache.Cache;
 
 /**
  * Weak Reference cache decorator.
  * Thanks to Dr. Heinz Kabutz for his guidance here.
  *
  * @author Clinton Begin
+ */
+
+/**
+ * 弱引用cache
  */
 public class WeakCache implements Cache {
   private final Deque<Object> hardLinksToAvoidGarbageCollection;
@@ -66,7 +70,7 @@ public class WeakCache implements Cache {
   public Object getObject(Object key) {
     Object result = null;
     @SuppressWarnings("unchecked") // assumed delegate cache is totally managed by this cache
-    WeakReference<Object> weakReference = (WeakReference<Object>) delegate.getObject(key);
+      WeakReference<Object> weakReference = (WeakReference<Object>) delegate.getObject(key);
     if (weakReference != null) {
       result = weakReference.get();
       if (result == null) {

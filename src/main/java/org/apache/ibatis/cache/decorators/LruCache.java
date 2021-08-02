@@ -25,6 +25,11 @@ import org.apache.ibatis.cache.Cache;
  *
  * @author Clinton Begin
  */
+
+/**
+ *
+ * 装饰器模式，装饰为最近最少使用 cache
+ */
 public class LruCache implements Cache {
 
   private final Cache delegate;
@@ -46,6 +51,7 @@ public class LruCache implements Cache {
     return delegate.getSize();
   }
 
+  // removeEldestEntry
   public void setSize(final int size) {
     keyMap = new LinkedHashMap<Object, Object>(size, .75F, true) {
       private static final long serialVersionUID = 4267176411845948333L;
@@ -84,6 +90,10 @@ public class LruCache implements Cache {
     keyMap.clear();
   }
 
+  /**
+   * 通过 LinkHashMap 实现Lru ，拿到需要删除的eldestKey,然后从委派的缓存中删除
+   * @param key
+   */
   private void cycleKeyList(Object key) {
     keyMap.put(key, key);
     if (eldestKey != null) {

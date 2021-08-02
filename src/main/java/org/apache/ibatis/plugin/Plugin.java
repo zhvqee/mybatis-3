@@ -41,7 +41,16 @@ public class Plugin implements InvocationHandler {
     this.signatureMap = signatureMap;
   }
 
+  /**
+   * 通过 jdk 代理创建 代理
+   * @param target
+   * @param interceptor
+   * @return
+   */
   public static Object wrap(Object target, Interceptor interceptor) {
+    /**
+     * 得到拦截器需要拦截的方法，key:拦截的类接口，value:为其方法
+     */
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
@@ -67,6 +76,12 @@ public class Plugin implements InvocationHandler {
     }
   }
 
+  /**
+   * Intercepts 上配置 需要拦截的类的方法配置
+   *
+   * @param interceptor
+   * @return
+   */
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251

@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  *   &#064;Override
  *   public Object intercept(Invocation invocation) throws Throwable {
  *     // implement pre-processing if needed
- *     Object returnObject = invocation.proceed();
+ *     Object  = invocation.procereturnObjected();
  *     // implement post-processing if needed
  *     return returnObject;
  *   }

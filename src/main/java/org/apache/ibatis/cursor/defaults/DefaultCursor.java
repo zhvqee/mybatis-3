@@ -15,11 +15,6 @@
  */
 package org.apache.ibatis.cursor.defaults;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.resultset.DefaultResultSetHandler;
 import org.apache.ibatis.executor.resultset.ResultSetWrapper;
@@ -27,6 +22,11 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.ResultContext;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This is the default implementation of a MyBatis Cursor.
@@ -44,7 +44,7 @@ public class DefaultCursor<T> implements Cursor<T> {
   protected final ObjectWrapperResultHandler<T> objectWrapperResultHandler = new ObjectWrapperResultHandler<>();
 
   private final CursorIterator cursorIterator = new CursorIterator();
-  private boolean iteratorRetrieved;
+  private boolean iteratorRetrieved; //代表=一个游标只能构建一个内部迭代器
 
   private CursorStatus status = CursorStatus.CREATED;
   private int indexWithRowBound = -1;
@@ -123,6 +123,7 @@ public class DefaultCursor<T> implements Cursor<T> {
 
   protected T fetchNextUsingRowBound() {
     T result = fetchNextObjectFromDatabase();
+    // 一直找到在[offset ，limit+offset—)的数据
     while (objectWrapperResultHandler.fetched && indexWithRowBound < rowBounds.getOffset()) {
       result = fetchNextObjectFromDatabase();
     }
@@ -179,6 +180,9 @@ public class DefaultCursor<T> implements Cursor<T> {
     }
   }
 
+  /**
+   * 游标迭代器
+   */
   protected class CursorIterator implements Iterator<T> {
 
     /**
@@ -193,6 +197,7 @@ public class DefaultCursor<T> implements Cursor<T> {
 
     @Override
     public boolean hasNext() {
+      //如果还没获取到，调用fetchNextUsingRowBound 获取，内部肯定变更了objectWrapperResultHandler.fetched
       if (!objectWrapperResultHandler.fetched) {
         object = fetchNextUsingRowBound();
       }
