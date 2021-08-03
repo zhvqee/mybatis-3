@@ -27,6 +27,9 @@ import org.apache.ibatis.session.ResultHandler;
 
 /**
  * @author Clinton Begin
+ *
+ * sql 执行处理器
+ *
  */
 public interface StatementHandler {
 

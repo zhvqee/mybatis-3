@@ -33,12 +33,12 @@ import org.apache.ibatis.session.Configuration;
  */
 public final class MappedStatement {
 
-  private String resource;
-  private Configuration configuration;
-  private String id;
+  private String resource; // 资源xml -> 例如：org/apache/ibatis/binding/BoundBlogMapper.xml
+  private Configuration configuration; //mybatis 配置
+  private String id; // interfaceName.method，Mapper
   private Integer fetchSize;
   private Integer timeout;
-  private StatementType statementType;
+  private StatementType statementType; //默认 ：PREPARED
   private ResultSetType resultSetType;
   private SqlSource sqlSource;
   private Cache cache;

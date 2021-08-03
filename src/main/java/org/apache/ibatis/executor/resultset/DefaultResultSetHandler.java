@@ -68,6 +68,8 @@ import org.apache.ibatis.util.MapUtil;
  * @author Eduardo Macarron
  * @author Iwao AVE!
  * @author Kazuki Shimizu
+ *
+ * 默认的结果集处理
  */
 public class DefaultResultSetHandler implements ResultSetHandler {
 
@@ -118,7 +120,11 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
   }
 
-  public DefaultResultSetHandler(Executor executor, MappedStatement mappedStatement, ParameterHandler parameterHandler, ResultHandler<?> resultHandler, BoundSql boundSql,
+  public DefaultResultSetHandler(Executor executor,
+                                 MappedStatement mappedStatement,
+                                 ParameterHandler parameterHandler,
+                                 ResultHandler<?> resultHandler,
+                                 BoundSql boundSql,
                                  RowBounds rowBounds) {
     this.executor = executor;
     this.configuration = mappedStatement.getConfiguration();
@@ -182,14 +188,31 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   public List<Object> handleResultSets(Statement stmt) throws SQLException {
     ErrorContext.instance().activity("handling results").object(mappedStatement.getId());
 
+
+    //返回结果集
     final List<Object> multipleResults = new ArrayList<>();
 
     int resultSetCount = 0;
+    //得到结果包裹
     ResultSetWrapper rsw = getFirstResultSet(stmt);
 
+    /**
+     * xml  <resultMap >
+     *           <id column="id" jdbcType="INTEGER" property="id"/>
+     *         <result column="xxx" jdbcType="INTEGER" property="xxx"/>
+     *      </resultMap>映射
+     */
     List<ResultMap> resultMaps = mappedStatement.getResultMaps();
+
+
+    /**
+     * 需要返回的属性大小
+     */
     int resultMapCount = resultMaps.size();
-    validateResultMapsCount(rsw, resultMapCount);
+
+    validateResultMapsCount(rsw, resultMapCount); //验证参数
+
+    //循环处理每个映射  <result column="xxx" jdbcType="INTEGER" property="xxx"/>
     while (rsw != null && resultMapCount > resultSetCount) {
       ResultMap resultMap = resultMaps.get(resultSetCount);
       handleResultSet(rsw, resultMap, multipleResults, null);
@@ -292,6 +315,14 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
   }
 
+  /**
+   * 处理resultMap 的一个映射resultMap
+   * @param rsw
+   * @param resultMap
+   * @param multipleResults
+   * @param parentMapping
+   * @throws SQLException
+   */
   private void handleResultSet(ResultSetWrapper rsw, ResultMap resultMap, List<Object> multipleResults, ResultMapping parentMapping) throws SQLException {
     try {
       if (parentMapping != null) {
@@ -299,7 +330,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       } else {
         if (resultHandler == null) {
           DefaultResultHandler defaultResultHandler = new DefaultResultHandler(objectFactory);
+          // 处理
           handleRowValues(rsw, resultMap, defaultResultHandler, rowBounds, null);
+          //添加结果
           multipleResults.add(defaultResultHandler.getResultList());
         } else {
           handleRowValues(rsw, resultMap, resultHandler, rowBounds, null);
@@ -321,6 +354,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   //
 
   public void handleRowValues(ResultSetWrapper rsw, ResultMap resultMap, ResultHandler<?> resultHandler, RowBounds rowBounds, ResultMapping parentMapping) throws SQLException {
+   // 是否有内嵌resultMap
     if (resultMap.hasNestedResultMaps()) {
       ensureNoRowBounds();
       checkResultHandler();
@@ -345,11 +379,16 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     }
   }
 
+
   private void handleRowValuesForSimpleResultMap(ResultSetWrapper rsw, ResultMap resultMap, ResultHandler<?> resultHandler, RowBounds rowBounds, ResultMapping parentMapping)
       throws SQLException {
+
+
     DefaultResultContext<Object> resultContext = new DefaultResultContext<>();
+    //得到执行结果
     ResultSet resultSet = rsw.getResultSet();
     skipRows(resultSet, rowBounds);
+
     while (shouldProcessMoreRows(resultContext, rowBounds) && !resultSet.isClosed() && resultSet.next()) {
       ResultMap discriminatedResultMap = resolveDiscriminatedResultMap(resultSet, resultMap, null);
       Object rowValue = getRowValue(rsw, discriminatedResultMap, null);
@@ -402,7 +441,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
       if (shouldApplyAutomaticMappings(resultMap, false)) {
         foundValues = applyAutomaticMappings(rsw, resultMap, metaObject, columnPrefix) || foundValues;
       }
-      foundValues = applyPropertyMappings(rsw, resultMap, metaObject, lazyLoader, columnPrefix) || foundValues;
+      foundValues = applyPropertyMappings(rsw, resultMap, metaObject, lazyLoader, columnPrefix) || foundValues;//得到映射值 resultset--> 指定的类型
       foundValues = lazyLoader.size() > 0 || foundValues;
       rowValue = foundValues || configuration.isReturnInstanceForEmptyRow() ? rowValue : null;
     }
@@ -628,9 +667,9 @@ public class DefaultResultSetHandler implements ResultSetHandler {
     this.useConstructorMappings = false; // reset previous mapping result
     final List<Class<?>> constructorArgTypes = new ArrayList<>();
     final List<Object> constructorArgs = new ArrayList<>();
-    Object resultObject = createResultObject(rsw, resultMap, constructorArgTypes, constructorArgs, columnPrefix);
+    Object resultObject = createResultObject(rsw, resultMap, constructorArgTypes, constructorArgs, columnPrefix); // 首先创建一个空的对象，比如Blog
     if (resultObject != null && !hasTypeHandlerForResultObject(rsw, resultMap.getType())) {
-      final List<ResultMapping> propertyMappings = resultMap.getPropertyResultMappings();
+      final List<ResultMapping> propertyMappings = resultMap.getPropertyResultMappings(); //拿到xml 的resultMap 映射
       for (ResultMapping propertyMapping : propertyMappings) {
         // issue gcode #109 && issue #149
         if (propertyMapping.getNestedQueryId() != null && propertyMapping.isLazy()) {

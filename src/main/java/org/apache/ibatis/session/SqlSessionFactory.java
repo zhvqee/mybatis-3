@@ -24,7 +24,7 @@ import java.sql.Connection;
  */
 public interface SqlSessionFactory {
 
-  SqlSession openSession();
+  SqlSession openSession(); // 返回 DefaultSqlSession
 
   SqlSession openSession(boolean autoCommit);
 

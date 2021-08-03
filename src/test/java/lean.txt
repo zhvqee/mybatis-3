@@ -1,0 +1,1 @@
+1、org.apache.ibatis.binding.BindingTest

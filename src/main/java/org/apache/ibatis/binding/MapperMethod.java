@@ -234,7 +234,7 @@ public class MapperMethod {
    */
   public static class SqlCommand {
 
-    private final String name;
+    private final String name; // interfaceName.method  -->例如 org.apache.ibatis.binding.BoundBlogMapper.selectBlogWithPostsUsingSubSelect
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {

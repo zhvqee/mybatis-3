@@ -63,11 +63,16 @@ class BindingTest {
 
   @BeforeAll
   static void setup() throws Exception {
+
     DataSource dataSource = BaseDataTest.createBlogDataSource();
     BaseDataTest.runScript(dataSource, BaseDataTest.BLOG_DDL);
     BaseDataTest.runScript(dataSource, BaseDataTest.BLOG_DATA);
+
+
     TransactionFactory transactionFactory = new JdbcTransactionFactory();
     Environment environment = new Environment("Production", transactionFactory, dataSource);
+
+
     Configuration configuration = new Configuration(environment);
     configuration.setLazyLoadingEnabled(true);
     configuration.setUseActualParamName(false); // to test legacy style reference (#{0} #{1})

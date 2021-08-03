@@ -31,6 +31,7 @@ import org.apache.ibatis.session.RowBounds;
 
 /**
  * @author Clinton Begin
+ * 委派模式,根据 MappedStatement 来决定执行那种处理
  */
 public class RoutingStatementHandler implements StatementHandler {
 

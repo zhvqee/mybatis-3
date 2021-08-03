@@ -47,6 +47,9 @@ public class SimpleStatementHandler extends BaseStatementHandler {
     Object parameterObject = boundSql.getParameterObject();
     KeyGenerator keyGenerator = mappedStatement.getKeyGenerator();
     int rows;
+
+    //Statement.RETURN_GENERATED_KEYS的方式返回主键id，需要特别注意，被操作的数据表主键id必须设置AUTO_INCREMENT属性
+    //主键返回
     if (keyGenerator instanceof Jdbc3KeyGenerator) {
       statement.execute(sql, Statement.RETURN_GENERATED_KEYS);
       rows = statement.getUpdateCount();

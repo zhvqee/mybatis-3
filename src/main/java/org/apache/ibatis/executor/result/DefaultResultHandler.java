@@ -24,6 +24,7 @@ import org.apache.ibatis.session.ResultHandler;
 
 /**
  * @author Clinton Begin
+ * 结果处理器
  */
 public class DefaultResultHandler implements ResultHandler<Object> {
 

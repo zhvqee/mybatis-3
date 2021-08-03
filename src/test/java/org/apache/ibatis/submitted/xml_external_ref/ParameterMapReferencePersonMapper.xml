@@ -25,7 +25,7 @@
         <result property="name" column="person_name" />
     </resultMap>
     <!-- Referencing a parameter map in another file -->
-    <select id="select" parameterMap="org.apache.ibatis.submitted.xml_external_ref.ParameterMapReferencePetMapper.personParameter" resultMap="personResult">
+    <select id="select"  parameterMap="org.apache.ibatis.submitted.xml_external_ref.ParameterMapReferencePetMapper.personParameter" resultMap="personResult">
         SELECT person_id, person_name
         FROM person
         WHERE person_id = ?

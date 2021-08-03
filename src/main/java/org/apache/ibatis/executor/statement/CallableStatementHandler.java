@@ -37,6 +37,8 @@ import org.apache.ibatis.type.JdbcType;
 
 /**
  * @author Clinton Begin
+ *
+ * 对存储过程的使用
  */
 public class CallableStatementHandler extends BaseStatementHandler {
 

@@ -34,6 +34,8 @@ import org.apache.ibatis.session.RowBounds;
 
 /**
  * @author Clinton Begin
+ *
+ * PreparedStatement
  */
 public class PreparedStatementHandler extends BaseStatementHandler {
 

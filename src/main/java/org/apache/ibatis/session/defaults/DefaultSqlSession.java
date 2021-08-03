@@ -154,7 +154,7 @@ public class DefaultSqlSession implements SqlSession {
   /**
    *
    * 最终方法
-   * @param statement xxx id   语句 <select id="xxxxx">
+   * @param statement xxx id   语句 <select id="xxxxx">,要加上命名空间（即interfaceName）-->例如org.apache.ibatis.binding.BoundBlogMapper.selectBlogWithPostsUsingSubSelect
    * @param parameter 参数
    * @param rowBounds 分页参数
    * @param handler // 结果处理器
