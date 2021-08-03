@@ -75,6 +75,15 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
     notNull(this.mapperInterface, "Property 'mapperInterface' is required");
 
     Configuration configuration = getSqlSession().getConfiguration();
+    /**
+     *
+     * 这里 mybatis Configuration -》mapperRegistry 与spring 进行关联，
+     * 这里是通过spring 扫描得到mapperInterface，然后在Spring的MapperFactoryBean 父类的afterPropertiesSet 调用checkDaoConfig
+     * 然后判断是否已经在mapperRegistry，如果不在，则加入
+     *
+     * 最后FactoryBean 实际获取时通过getObject()-> session.getMapper
+     *
+     */
     if (this.addToConfig && !configuration.hasMapper(this.mapperInterface)) {
       try {
         configuration.addMapper(this.mapperInterface);

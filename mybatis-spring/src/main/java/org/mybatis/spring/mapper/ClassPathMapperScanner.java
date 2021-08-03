@@ -232,6 +232,16 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
       // the mapper interface is the original class of the bean
       // but, the actual class of the bean is MapperFactoryBean
+
+      /**
+       * 设置构造参数参数为Mapper接口，工厂Bean,getObject 为mapperInterface 类型
+       * public MapperFactoryBean(Class<T> mapperInterface) {
+       *     this.mapperInterface = mapperInterface;
+       *   }
+       *
+       * @link https://www.cnblogs.com/hei12138/p/mybatis-spring.html
+       *
+       */
       definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName); // issue #59
       definition.setBeanClass(this.mapperFactoryBeanClass);
 

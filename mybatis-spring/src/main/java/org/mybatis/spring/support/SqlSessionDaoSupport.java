@@ -41,6 +41,15 @@ public abstract class SqlSessionDaoSupport extends DaoSupport {
   private SqlSessionTemplate sqlSessionTemplate;
 
   /**
+   *
+   * 设置到MapperFactoryBean中sqlSessionFactory或者是sqlSessionTemplate都是从spring中获取的，这就意味着，
+   *
+   * 当设置的是sqlSessionFactory时，每个MapperFactoryBean中的sqlSessionTemplate是不同的，但是最终的sqlSessionFactory是相同的，
+   *
+   * 当设置的是sqlSessionTemplate时，每个MapperFactoryBean中sqlSessionTemplate就是同一个
+   *
+   */
+  /**
    * Set MyBatis SqlSessionFactory to be used by this DAO. Will automatically create SqlSessionTemplate for the given
    * SqlSessionFactory.
    *
