@@ -21,6 +21,7 @@
     <modules>
         <module>mybatis-spring</module>
         <module>mybatis-core</module>
+      <module>mybatis-springboot</module>
     </modules>
 
     <parent>
