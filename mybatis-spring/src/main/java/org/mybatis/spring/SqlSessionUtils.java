@@ -71,6 +71,12 @@ public final class SqlSessionUtils {
   }
 
   /**
+   *
+   *  从Spring 的事务管理器获取 SqlSession 或  new 一个新的。
+   *  首先从当前的事务中获取session ，如果没有new 一个
+   *
+   *
+   *
    * Gets an SqlSession from Spring Transaction Manager or creates a new one if needed. Tries to get a SqlSession out of
    * current transaction. If there is not any, it creates a new one. Then, it synchronizes the SqlSession with the
    * transaction if Spring TX is active and <code>SpringManagedTransactionFactory</code> is configured as a transaction
